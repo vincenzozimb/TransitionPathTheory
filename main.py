@@ -1,5 +1,5 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.integrate import dblquad
+# from tpt import committor
+# from tpt import bk
 
-from test import prova
+# from test import prova
+from tpt import committor
