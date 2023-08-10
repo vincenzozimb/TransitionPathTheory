@@ -1,5 +1,4 @@
-# from tpt import committor
-# from tpt import bk
+# ideal parameters: dx = 0.03, Niter = 3000
+from dw2d import dw2d
 
-# from tpt import committor
-from test import prova
+# from test import prova
