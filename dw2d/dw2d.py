@@ -103,7 +103,7 @@ plt.ylabel('Y')
 plt.title('Transition Path Current')
 # plt.gca().set_facecolor('lightgray')  # Set background color
 plt.tight_layout()
-plt.show()
+plt.savefig("dw2d/J_tpt.png")
 
 
 # subsample_factor = 2
