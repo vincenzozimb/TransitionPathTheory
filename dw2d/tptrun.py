@@ -1,7 +1,8 @@
 # import libraries
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.integrate import dblquad
+import csv
+import pickle
 
 # define the potential
 def potential(x, y):
@@ -33,25 +34,6 @@ Vy = V_partialy(X,Y) # derivative wrt y
 Z, dZ = dblquad(lambda y, x: np.exp(-potential(x, y)), -Ly, Ly, lambda x: -Lx, lambda x: Lx)
 beta = 1
 prob = np.exp(-beta*V) / Z
-
-# Visualize the potential and the Giggs distribution
-plt.figure(figsize=(10, 6))
-plt.subplot(1, 2, 1)
-plt.contourf(X, Y, V, levels=20, cmap='viridis')
-plt.colorbar(label='Potential')
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('Potential Energy')
-
-plt.subplot(1, 2, 2)
-plt.contourf(X, Y, prob, levels=20, cmap='viridis')
-plt.colorbar(label='Probability density')
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('Gibbs distribution')
-
-plt.tight_layout()
-plt.savefig("dw2d/p&g.png")
 
 # metatable states
 Vmax = 0.4
@@ -93,46 +75,26 @@ for k in range(Niter):
     q[np.logical_and(metastable_boolean, reactanct[:, np.newaxis])] = 0
     q[np.logical_and(metastable_boolean, ~reactanct[:, np.newaxis])] = 1
 
-# plot the committor
-fig = plt.subplots(figsize=(8, 6))
-contourf = plt.contourf(X, Y, q, levels=15, cmap='viridis')
-highlighted_levels = np.array([-1])  # Value that highlights the region
-highlighted_contour = np.where(metastable_boolean, highlighted_levels, np.nan)
-plt.contourf(X, Y, highlighted_contour, colors='white', alpha=1)
-plt.colorbar(contourf)
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('Forward committor')
-plt.savefig("dw2d/c_tpt.png")
-
-
 # kernel of the probability density of reactive trajectories
 m = q * (1-q) * np.exp(-V)
-
-# plot m
-fig, ax = plt.subplots(figsize=(8, 6))
-contourf = ax.contourf(X, Y, m, levels=15, cmap='viridis')
-highlighted_contour = np.where(metastable_boolean, highlighted_levels, np.nan)
-plt.contourf(X, Y, highlighted_contour, colors='white', alpha=1)
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('Kernel of the transition path density')
-plt.savefig("dw2d/m_tpt.png")
 
 # transition path current
 J = np.gradient(q) * prob
 
-# plot of the vector field
-subsample_factor = 2
-X_plot = X[::subsample_factor, ::subsample_factor]
-Y_plot = Y[::subsample_factor, ::subsample_factor]
-Jx_plot = J[0][::subsample_factor, ::subsample_factor]
-Jy_plot = J[1][::subsample_factor, ::subsample_factor]
+# save data
+parameters = {
+    'Nx' : Nx,
+    'Ny' : Ny,
+    'Vmax' : Vmax
+}
 
-plt.figure(figsize=(8, 6))
-plt.quiver(X_plot, Y_plot, Jx_plot, Jy_plot, angles='xy', scale_units='xy', scale=0.1, color='darkblue', alpha=0.7, width=0.005, headwidth=4)
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('Transition path current')
-plt.gca().set_facecolor('lightgray')  # Set background color
-plt.savefig("dw2d/J_tpt.png")
+file_path = 'dw2d/parameters.pkl'
+with open(file_path, 'wb') as file:
+    pickle.dump(parameters, file)
+
+with open('dw2d/data.csv', 'w', newline='') as csvfile:
+    csv_writer = csv.writer(csvfile)
+    csv_writer.writerow(['X', 'Y', 'Potential', 'Gibbs', 'q', 'TPD', 'TPCx', 'TPCy'])  # Write header
+    for x_row, y_row, V_row, P_row, q_row, m_row, Jx_row, Jy_row in zip(X, Y, V, prob, q, m, J[0], J[1]):
+        for x_val, y_val, V_val, P_val, q_val, m_val, Jx_val, Jy_val in zip(x_row, y_row, V_row, P_row, q_row, m_row, Jx_row, Jy_row):
+            csv_writer.writerow([x_val, y_val, V_val, P_val, q_val, m_val, Jx_val, Jy_val])
