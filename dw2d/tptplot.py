@@ -66,7 +66,7 @@ plt.ylabel('Y')
 plt.title('Gibbs distribution')
 
 plt.tight_layout()
-plt.savefig("dw2d/p&g.png")
+plt.savefig("dw2d/images/p&g.png")
 
 # plot the committor
 metastable_boolean = V < Vmax
@@ -79,7 +79,7 @@ plt.colorbar(contourf)
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Forward committor')
-plt.savefig("dw2d/c_tpt.png")
+plt.savefig("dw2d/images/c_tpt.png")
 
 # plot m
 fig, ax = plt.subplots(figsize=(8, 6))
@@ -89,7 +89,7 @@ plt.contourf(X, Y, highlighted_contour, colors='white', alpha=1)
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Kernel of the transition path density')
-plt.savefig("dw2d/m_tpt.png")
+plt.savefig("dw2d/images/m_tpt.png")
 
 # plot of the vector field
 magnitude = np.sqrt(J[0]**2 + J[1]**2)
@@ -103,7 +103,7 @@ plt.ylabel('Y')
 plt.title('Transition Path Current')
 # plt.gca().set_facecolor('lightgray')  # Set background color
 plt.tight_layout()
-plt.savefig("dw2d/J_tpt.png")
+plt.savefig("dw2d/images/J_tpt.png")
 
 
 # subsample_factor = 2
