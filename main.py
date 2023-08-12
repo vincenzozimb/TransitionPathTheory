@@ -1,4 +1,4 @@
-# ideal parameters: dx = 0.03, Niter = 3000
+# ideal parameters for dw2d: dx = 0.03, Niter = 3000
 
 # string = input("Type 'run' for simulate data, 'plot' to analyze:")
 
@@ -9,7 +9,7 @@
 # else:
 #     print("Error")
 
-from dw2d import tptplot
+# from tw2d import tptplot
 
 
 # from test import prova

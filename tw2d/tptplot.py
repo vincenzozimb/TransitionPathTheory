@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pickle
 
 # Import parameters
-file_path = 'dw2d/parameters.pkl'
+file_path = 'tw2d/parameters.pkl'
 with open(file_path, 'rb') as file:
     parameters = pickle.load(file)
 
@@ -22,7 +22,7 @@ m = []
 J = [[], []]
 
 # Open the CSV file for reading
-with open('dw2d/data.csv', 'r') as csvfile:
+with open('tw2d/data.csv', 'r') as csvfile:
     csv_reader = csv.reader(csvfile)
     # Read and skip the header row
     header = next(csv_reader)
@@ -66,12 +66,12 @@ plt.ylabel('Y')
 plt.title('Gibbs distribution')
 
 plt.tight_layout()
-plt.savefig("dw2d/images/p&g.png")
+plt.savefig("tw2d/images/p&g.png")
 
 # plot the committor
 metastable_boolean = V < Vmax
 fig = plt.subplots(figsize=(8, 6))
-contourf = plt.contourf(X, Y, q, levels=15, cmap='viridis')
+contourf = plt.contourf(X, Y, q, levels=10, cmap='viridis')
 highlighted_levels = np.array([-1])  # Value that highlights the region
 highlighted_contour = np.where(metastable_boolean, highlighted_levels, np.nan)
 plt.contourf(X, Y, highlighted_contour, colors='white', alpha=1)
@@ -79,7 +79,7 @@ plt.colorbar(contourf)
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Forward committor')
-plt.savefig("dw2d/images/c_tpt.png")
+plt.savefig("tw2d/images/c_tpt.png")
 
 # plot m
 fig, ax = plt.subplots(figsize=(8, 6))
@@ -89,13 +89,13 @@ plt.contourf(X, Y, highlighted_contour, colors='white', alpha=1)
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Kernel of the transition path density')
-plt.savefig("dw2d/images/m_tpt.png")
+plt.savefig("tw2d/images/m_tpt.png")
 
 # plot of the vector field
 magnitude = np.sqrt(J[0]**2 + J[1]**2)
 magnitude_normalized = (magnitude - np.min(magnitude)) / (np.max(magnitude) - np.min(magnitude))
 plt.figure(figsize=(8, 6))
-plt.streamplot(X.T, Y.T, J[0].T, J[1].T, density=1.5, color=magnitude_normalized.T, cmap='viridis')
+plt.streamplot(X.T, Y.T, J[0].T, J[1].T, density=2, color=magnitude_normalized.T, cmap='viridis')
 plt.colorbar(label='Magnitude')
 plt.contourf(X, Y, highlighted_contour, colors='lightgray', alpha=1)
 plt.xlabel('X')
@@ -103,7 +103,7 @@ plt.ylabel('Y')
 plt.title('Transition Path Current')
 # plt.gca().set_facecolor('lightgray')  # Set background color
 plt.tight_layout()
-plt.savefig("dw2d/images/J_tpt.png")
+plt.savefig("tw2d/images/J_tpt.png")
 
 
 # subsample_factor = 2
