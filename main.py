@@ -9,7 +9,4 @@
 # else:
 #     print("Error")
 
-# from tw2d import tptplot
-
-
-# from test import prova
+from tpt import tptplot
