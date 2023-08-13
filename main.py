@@ -1,12 +1,15 @@
-# ideal parameters for dw2d: dx = 0.03, Niter = 3000
+# set parameters
+beta = 1
+dx = 0.03
+Niter = 3000
 
-# string = input("Type 'run' for simulate data, 'plot' to analyze:")
 
-# if string == 'run':
-#     from dw2d import tptrun
-# elif string == 'plot':
-#     from dw2d import tptplot
-# else:
-#     print("Error")
+# execute the code
+solve = 3
 
-from tpt import tptplot
+if solve == 1:
+    from doublewell import run
+elif solve == 2:
+    from doublewell import plot
+elif solve == 3:
+    from doublewell import langevin

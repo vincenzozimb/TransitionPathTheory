@@ -3,12 +3,16 @@ import numpy as np
 from scipy.integrate import dblquad
 import csv
 import pickle
+import os
 
-from functions import fun
+from functions import func 
+from doublewell import dw
+
+# from doublewell import beta, dx, Niter
+from main import beta, dx, Niter
 
 # simulation box parameters
 Lx, Ly = 1.5, 1
-dx = 0.03
 dy = dx
 Nx = int(2*Lx/dx)
 Ny = int(2*Ly/dy)
@@ -17,13 +21,12 @@ Ny = int(2*Ly/dy)
 x = np.linspace(-Lx, Lx, Nx) # Range of x values
 y = np.linspace(-Ly, Ly, Ny) # Range of y values
 Y, X = np.meshgrid(y, x)  # Transpose X and Y here
-V = fun.potential(X, Y) # potential
-Vx = fun.V_partialx(X,Y) # derivative wrt x
-Vy = fun.V_partialy(X,Y) # derivative wrt y
+V = dw.potential(X, Y) # potential
+Vx = dw.V_partialx(X,Y) # derivative wrt x
+Vy = dw.V_partialy(X,Y) # derivative wrt y
 
 # calculate the Gibbs distribution (beta=1)
-beta = 1
-Z, dZ = dblquad(lambda y, x: np.exp(-beta*fun.potential(x, y)), -Ly, Ly, lambda x: -Lx, lambda x: Lx)
+Z, dZ = dblquad(lambda y, x: np.exp(-beta*dw.potential(x, y)), -Ly, Ly, lambda x: -Lx, lambda x: Lx)
 prob = np.exp(-beta*V) / Z
 
 # metatable states
@@ -31,14 +34,13 @@ Vmax = 0.4
 
 # initialize the committor
 q = np.zeros((Nx,Ny))
-fun.neumann(q)
+func.neumann(q)
 metastable_boolean = V < Vmax
 reactant = x < 0
-fun.dirichlet(q, metastable_boolean, reactant)
+func.dirichlet(q, metastable_boolean, reactant)
 
 # solve the BK equation
-Niter = 3000
-fun.bk_solver(q, Vx, Vy, Nx, Ny, dx, dy, Niter, metastable_boolean, reactant)
+func.bk_solver(q, Vx, Vy, Nx, Ny, dx, dy, Niter, metastable_boolean, reactant)
 
 # kernel of the probability density of reactive trajectories
 m = q * (1-q) * np.exp(-V)
@@ -53,11 +55,14 @@ parameters = {
     'Vmax' : Vmax
 }
 
-file_path = 'tpt/parameters.pkl'
+if not os.path.exists('doublewell/data'):
+   os.makedirs('doublewell/data')
+
+file_path = 'doublewell/data/parameters.pkl'
 with open(file_path, 'wb') as file:
     pickle.dump(parameters, file)
 
-with open('tpt/data.csv', 'w', newline='') as csvfile:
+with open('doublewell/data/data.csv', 'w', newline='') as csvfile:
     csv_writer = csv.writer(csvfile)
     csv_writer.writerow(['X', 'Y', 'Potential', 'Gibbs', 'q', 'TPD', 'TPCx', 'TPCy'])  # Write header
     for x_row, y_row, V_row, P_row, q_row, m_row, Jx_row, Jy_row in zip(X, Y, V, prob, q, m, J[0], J[1]):

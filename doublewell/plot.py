@@ -2,9 +2,10 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle
+import os
 
 # Import parameters
-file_path = 'dw2d/parameters.pkl'
+file_path = 'doublewell/data/parameters.pkl'
 with open(file_path, 'rb') as file:
     parameters = pickle.load(file)
 
@@ -22,7 +23,7 @@ m = []
 J = [[], []]
 
 # Open the CSV file for reading
-with open('dw2d/data.csv', 'r') as csvfile:
+with open('doublewell/data/data.csv', 'r') as csvfile:
     csv_reader = csv.reader(csvfile)
     # Read and skip the header row
     header = next(csv_reader)
@@ -48,30 +49,33 @@ q = np.array(q).reshape((Nx, Ny))
 m = np.array(m).reshape((Nx, Ny))  
 J = [np.array(J[0]).reshape((Nx, Ny)), np.array(J[1]).reshape((Nx, Ny))]
 
+# Create folder for images, if it does not already exist
+if not os.path.exists('doublewell/images'):
+   os.makedirs('doublewell/images')
 
 # Visualize the potential and the Giggs distribution
 plt.figure(figsize=(10, 6))
 plt.subplot(1, 2, 1)
-plt.contourf(X, Y, V, levels=20, cmap='viridis')
+plt.contourf(X, Y, V, levels=15, cmap='viridis')
 plt.colorbar(label='Potential')
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Potential Energy')
 
 plt.subplot(1, 2, 2)
-plt.contourf(X, Y, prob, levels=20, cmap='viridis')
+plt.contourf(X, Y, prob, levels=15, cmap='viridis')
 plt.colorbar(label='Probability density')
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Gibbs distribution')
 
 plt.tight_layout()
-plt.savefig("dw2d/images/p&g.png")
+plt.savefig("doublewell/images/p&g.png")
 
 # plot the committor
 metastable_boolean = V < Vmax
 fig = plt.subplots(figsize=(8, 6))
-contourf = plt.contourf(X, Y, q, levels=15, cmap='viridis')
+contourf = plt.contourf(X, Y, q, levels=10, cmap='viridis')
 highlighted_levels = np.array([-1])  # Value that highlights the region
 highlighted_contour = np.where(metastable_boolean, highlighted_levels, np.nan)
 plt.contourf(X, Y, highlighted_contour, colors='white', alpha=1)
@@ -79,17 +83,17 @@ plt.colorbar(contourf)
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Forward committor')
-plt.savefig("dw2d/images/c_tpt.png")
+plt.savefig("doublewell/images/c_tpt.png")
 
 # plot m
 fig, ax = plt.subplots(figsize=(8, 6))
-contourf = ax.contourf(X, Y, m, levels=15, cmap='viridis')
+contourf = ax.contourf(X, Y, m, levels=10, cmap='viridis')
 highlighted_contour = np.where(metastable_boolean, highlighted_levels, np.nan)
 plt.contourf(X, Y, highlighted_contour, colors='white', alpha=1)
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Kernel of the transition path density')
-plt.savefig("dw2d/images/m_tpt.png")
+plt.savefig("doublewell/images/m_tpt.png")
 
 # plot of the vector field
 magnitude = np.sqrt(J[0]**2 + J[1]**2)
@@ -103,7 +107,7 @@ plt.ylabel('Y')
 plt.title('Transition Path Current')
 # plt.gca().set_facecolor('lightgray')  # Set background color
 plt.tight_layout()
-plt.savefig("dw2d/images/J_tpt.png")
+plt.savefig("doublewell/images/J_tpt.png")
 
 
 # subsample_factor = 2
@@ -118,6 +122,6 @@ plt.savefig("dw2d/images/J_tpt.png")
 # plt.ylabel('Y')
 # plt.title('Transition path current')
 # plt.gca().set_facecolor('lightgray')  # Set background color
-# plt.savefig("dw2d/J_tpt.png")
+# plt.savefig("doublewell/J_tpt.png")
 
 plt.show()
