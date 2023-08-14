@@ -8,7 +8,7 @@ import os
 from functions import func 
 from doublewell import dw
 
-# from doublewell import beta, dx, Niter
+# import parameters
 from main import beta, dx, Niter
 
 # simulation box parameters
@@ -25,7 +25,7 @@ V = dw.potential(X, Y) # potential
 Vx = dw.V_partialx(X,Y) # derivative wrt x
 Vy = dw.V_partialy(X,Y) # derivative wrt y
 
-# calculate the Gibbs distribution (beta=1)
+# calculate the Gibbs distribution
 Z, dZ = dblquad(lambda y, x: np.exp(-beta*dw.potential(x, y)), -Ly, Ly, lambda x: -Lx, lambda x: Lx)
 prob = np.exp(-beta*V) / Z
 
@@ -47,6 +47,13 @@ m = q * (1-q) * np.exp(-V)
 
 # transition path current
 J = np.gradient(q) * prob
+
+# reaction rate
+dq_dx = np.gradient(q, axis=1)
+integrand = np.exp(-beta * V[:, 0]) * dq_dx[:, 0]
+
+k = np.sum(integrand) * dy / (Z * beta)
+print("The reaction rate is k =", k)
 
 # save data
 parameters = {

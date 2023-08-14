@@ -99,13 +99,13 @@ plt.savefig("doublewell/images/m_tpt.png")
 magnitude = np.sqrt(J[0]**2 + J[1]**2)
 magnitude_normalized = (magnitude - np.min(magnitude)) / (np.max(magnitude) - np.min(magnitude))
 plt.figure(figsize=(8, 6))
-plt.streamplot(X.T, Y.T, J[0].T, J[1].T, density=1.5, color=magnitude_normalized.T, cmap='viridis')
+plt.streamplot(X.T, Y.T, J[0].T, J[1].T, density=1.2, color=magnitude_normalized.T, cmap='viridis')
 plt.colorbar(label='Magnitude')
 plt.contourf(X, Y, highlighted_contour, colors='lightgray', alpha=1)
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Transition Path Current')
-# plt.gca().set_facecolor('lightgray')  # Set background color
+plt.gca().set_facecolor('snow')  # Set background color
 plt.tight_layout()
 plt.savefig("doublewell/images/J_tpt.png")
 
@@ -117,11 +117,24 @@ plt.savefig("doublewell/images/J_tpt.png")
 # Jy_plot = J[1][::subsample_factor, ::subsample_factor]
 
 # plt.figure(figsize=(8, 6))
-# plt.quiver(X_plot, Y_plot, Jx_plot, Jy_plot, angles='xy', scale_units='xy', scale=0.1, color='darkblue', alpha=0.7, width=0.005, headwidth=4)
+# plt.quiver(X_plot, Y_plot, Jx_plot, Jy_plot, angles='xy', scale_units='xy', scale=0.05, color='blue', alpha=0.7, width=0.005, headwidth=4)
 # plt.xlabel('X')
 # plt.ylabel('Y')
 # plt.title('Transition path current')
-# plt.gca().set_facecolor('lightgray')  # Set background color
-# plt.savefig("doublewell/J_tpt.png")
+# # plt.gca().set_facecolor('lightgray')  # Set background color
+# plt.savefig("doublewell/images/J_tpt.png")
 
-plt.show()
+# plt.show()
+
+
+# # reaction rate
+# beta = 1
+# h = 0.03
+
+# dq_dx = np.gradient(q, axis=1)
+# dq_dy = np.gradient(q, axis=0)
+
+# integrand = prob * (dq_dx**2 + dq_dy**2)
+
+# k = np.sum(integrand) * h * h / beta
+# print("The reaction rate is k =", format(k, ".2e"))

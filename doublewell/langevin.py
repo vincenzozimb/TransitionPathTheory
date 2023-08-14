@@ -7,7 +7,10 @@ import os
 from doublewell import dw
 from functions.func import overdamped_langevin
 
+
 # Import parameters
+from main import dt, T, D
+
 file_path = 'doublewell/data/parameters.pkl'
 with open(file_path, 'rb') as file:
     parameters = pickle.load(file)
@@ -21,7 +24,6 @@ Vmax = parameters['Vmax']
 X = []
 Y = []
 V = []
-prob = []
 
 
 # Open the CSV file for reading
@@ -31,19 +33,17 @@ with open('doublewell/data/data.csv', 'r') as csvfile:
     header = next(csv_reader)
     # Iterate through each row in the CSV file
     for row in csv_reader:
-        x_val, y_val, V_val, P_val = map(float, row[:4])
+        x_val, y_val, V_val = map(float, row[:3])
         # Append values to their respective lists
         X.append(x_val)
         Y.append(y_val)
         V.append(V_val)
-        prob.append(P_val)
 
 
 # Reshape the loaded data back to their original meshgrid shape
 X = np.array(X).reshape((Nx, Ny))  
 Y = np.array(Y).reshape((Nx, Ny))  
 V = np.array(V).reshape((Nx, Ny))  
-prob = np.array(prob).reshape((Nx, Ny))
 
 
 # Create folder for images, if it does not already exist
@@ -51,11 +51,8 @@ if not os.path.exists('doublewell/images'):
    os.makedirs('doublewell/images')
 
 
-# Define parameters
-x0, y0 = -1.0, 0.0  # Initial positions (x, y)
-D = 1               # Diffusion coefficient
-dt = 0.01           # Time step for numerical integration
-T = 10              # Total time for integration
+# Initial positions (x, y)
+x0, y0 = -1.0, 0.0 
 
 
 # Define deterministic forces for the x and y directions
@@ -66,12 +63,78 @@ f_y = lambda x, y: dw.V_partialy(x, y)
 # Solve the 2D Langevin equation
 t, x, y = overdamped_langevin(x0, y0, f_x, f_y, D, dt, T)
 
-# Plot the results
-plt.contourf(X, Y, V, levels=15, cmap='coolwarm')
-plt.colorbar(label='Energy')
-plt.plot(x, y, linestyle='-', color='blue', label='Trajectory')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title('Energy Landscape with Trajectory')
-plt.legend()
-plt.show()
+
+# # Plot the trajectory
+# plt.contourf(X, Y, V, levels=15, cmap='coolwarm')
+# plt.colorbar(label='Energy')
+# plt.plot(x_reac, y_reac, linestyle='-', color='blue', label='Trajectory')
+# plt.xlabel('x')
+# plt.ylabel('y')
+# plt.title('Energy Landscape with Trajectory')
+# plt.legend()
+# plt.show()
+
+
+# indicator functions of the metastable states
+def in_reac(x, y):
+    return x < 0 and dw.potential(x, y) < Vmax  # condition for reactant set 
+
+def in_prod(x, y):
+    return x > 0 and dw.potential(x, y) < Vmax  # condition for product set 
+
+
+# first and last passage time functions
+def t_plus(t0, t, x, y, R, P):
+    """
+    Calculate the first passage time to the reactant set or to the product set starting from time t.
+
+    Parameters:
+        t0: Independent time variable.
+        t: Array of times of the trajectory data.
+        x: Array of x-coordinate trajectory data.
+        y: Array of y-coordinate trajectory data.
+        R: A function that returns True if a point is in set R.
+        P: A function that returns True if a point is in set P.
+
+    Returns:
+        float: The first passage time to R or P starting from time t, or np.inf if not reached.
+    """
+    for n in range(len(t)):
+        if t[n] < t0:
+            continue
+        if R(x[n], y[n]) or P(x[n], y[n]):
+            return t[n]
+    return np.inf # check this (should be fine)
+    # for improvement (add also in t_minus)
+    # for ti, xi, yi in zip(t, x, y):
+    #     if ti < t0:
+    #         continue
+    #     if R(xi, yi) or P(xi, yi):
+    #         return ti
+    # return np.inf
+
+def t_minus(t0, t, x, y, R, P):
+    """
+    Calculate the last passage time to the reactant set or to the product set starting from time t.
+
+    Parameters:
+        t0: Independent time variable.
+        t: Array of times of the trajectory data.
+        x: Array of x-coordinate trajectory data.
+        y: Array of y-coordinate trajectory data.
+        R: A function that returns True if a point is in set R.
+        P: A function that returns True if a point is in set P.
+
+    Returns:
+        float: The last passage time to R or P ending at time t, or -np.inf if not reached.
+    """
+    for n in reversed(range(len(t))):
+        if t[n] > t0:
+            continue
+        if R(x[n], y[n]) or P(x[n], y[n]):
+            return t[n]
+    return -np.inf # check this (should be fine)
+
+
+
+
