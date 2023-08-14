@@ -1,13 +1,11 @@
-# set parameters
-beta = 1
-dx = 0.03
-Niter = 3000
-
-
 # execute the code
-solve = 3
+solve = 2
 
 if solve == 1:
+    # set parameters
+    beta = 1
+    dx = 0.03
+    Niter = 3000
     from doublewell import run
 elif solve == 2:
     from doublewell import plot

@@ -54,7 +54,7 @@ if not os.path.exists('doublewell/images'):
    os.makedirs('doublewell/images')
 
 # Visualize the potential and the Giggs distribution
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(12, 6))
 plt.subplot(1, 2, 1)
 plt.contourf(X, Y, V, levels=15, cmap='viridis')
 plt.colorbar(label='Potential')
