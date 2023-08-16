@@ -10,6 +10,7 @@ from doublewell import dw
 
 # import parameters
 from main import beta, dx, Niter
+from doublewell.dw import Vmax
 
 # simulation box parameters
 Lx, Ly = 1.5, 1
@@ -29,8 +30,6 @@ Vy = dw.V_partialy(X,Y) # derivative wrt y
 Z, dZ = dblquad(lambda y, x: np.exp(-beta*dw.potential(x, y)), -Ly, Ly, lambda x: -Lx, lambda x: Lx)
 prob = np.exp(-beta*V) / Z
 
-# metatable states
-Vmax = 0.4
 
 # initialize the committor
 q = np.zeros((Nx,Ny))
@@ -48,18 +47,11 @@ m = q * (1-q) * np.exp(-V)
 # transition path current
 J = np.gradient(q) * prob
 
-# reaction rate
-dq_dx = np.gradient(q, axis=1)
-integrand = np.exp(-beta * V[:, 0]) * dq_dx[:, 0]
-
-k = np.sum(integrand) * dy / (Z * beta)
-print("The reaction rate is k =", k)
 
 # save data
 parameters = {
     'Nx' : Nx,
     'Ny' : Ny,
-    'Vmax' : Vmax
 }
 
 if not os.path.exists('doublewell/data'):

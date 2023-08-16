@@ -10,6 +10,7 @@ from functions.func import overdamped_langevin
 
 # Import parameters
 from main import dt, T, D
+from doublewell.dw import Vmax
 
 file_path = 'doublewell/data/parameters.pkl'
 with open(file_path, 'rb') as file:
@@ -17,7 +18,6 @@ with open(file_path, 'rb') as file:
 
 Nx = parameters['Nx']
 Ny = parameters['Ny']
-Vmax = parameters['Vmax']
 
 
 # Initialize empty lists to store data columns
@@ -75,66 +75,43 @@ t, x, y = overdamped_langevin(x0, y0, f_x, f_y, D, dt, T)
 # plt.show()
 
 
-# indicator functions of the metastable states
-def in_reac(x, y):
-    return x < 0 and dw.potential(x, y) < Vmax  # condition for reactant set 
+# indicator functions
+def one_T(x0, y0):
+    if dw.in_reac(x0, y0) or dw.in_prod(x0, y0):
+        return 0.0
+    else:
+        return 1.0
+    
+def one_R(t0):
+    tm = dw.t_minus(t0, t, x, y)
+    x0 = x[tm]
+    y0 = y[tm]
+    if dw.in_reac(x0, y0):
+        return 1.0
+    else:
+        return 0.0
 
-def in_prod(x, y):
-    return x > 0 and dw.potential(x, y) < Vmax  # condition for product set 
+def one_P(t0):
+    tp = dw.t_plus(t0, t, x, y)
+    x0 = x[tp]
+    y0 = y[tp]
+    if dw.in_prod(x0, y0):
+        return 1.0
+    else:
+        return 0.0
 
 
-# first and last passage time functions
-def t_plus(t0, t, x, y, R, P):
-    """
-    Calculate the first passage time to the reactant set or to the product set starting from time t.
+# g-function (Dirac delta)
+h = 0.03
+def g_delta(x0, y0, xpar, ypar):
+    if np.abs(x0 - xpar) < h and np.abs(y0 - ypar) < h:
+        return 1.0
+    else:
+        return 0.0
 
-    Parameters:
-        t0: Independent time variable.
-        t: Array of times of the trajectory data.
-        x: Array of x-coordinate trajectory data.
-        y: Array of y-coordinate trajectory data.
-        R: A function that returns True if a point is in set R.
-        P: A function that returns True if a point is in set P.
 
-    Returns:
-        float: The first passage time to R or P starting from time t, or np.inf if not reached.
-    """
-    for n in range(len(t)):
-        if t[n] < t0:
-            continue
-        if R(x[n], y[n]) or P(x[n], y[n]):
-            return t[n]
-    return np.inf # check this (should be fine)
-    # for improvement (add also in t_minus)
-    # for ti, xi, yi in zip(t, x, y):
-    #     if ti < t0:
-    #         continue
-    #     if R(xi, yi) or P(xi, yi):
-    #         return ti
-    # return np.inf
-
-def t_minus(t0, t, x, y, R, P):
-    """
-    Calculate the last passage time to the reactant set or to the product set starting from time t.
-
-    Parameters:
-        t0: Independent time variable.
-        t: Array of times of the trajectory data.
-        x: Array of x-coordinate trajectory data.
-        y: Array of y-coordinate trajectory data.
-        R: A function that returns True if a point is in set R.
-        P: A function that returns True if a point is in set P.
-
-    Returns:
-        float: The last passage time to R or P ending at time t, or -np.inf if not reached.
-    """
-    for n in reversed(range(len(t))):
-        if t[n] > t0:
-            continue
-        if R(x[n], y[n]) or P(x[n], y[n]):
-            return t[n]
-    return -np.inf # check this (should be fine)
-
+# numerator integral
+num = np.zeros((Nx, Ny))
 
 
 

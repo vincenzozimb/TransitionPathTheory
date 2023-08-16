@@ -5,13 +5,14 @@ import pickle
 import os
 
 # Import parameters
+from doublewell.dw import Vmax
+
 file_path = 'doublewell/data/parameters.pkl'
 with open(file_path, 'rb') as file:
     parameters = pickle.load(file)
 
 Nx = parameters['Nx']
 Ny = parameters['Ny']
-Vmax = parameters['Vmax']
 
 # Initialize empty lists to store data columns
 X = []
