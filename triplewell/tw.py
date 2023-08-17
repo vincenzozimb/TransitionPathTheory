@@ -111,12 +111,12 @@ def neumann(q):
     """
     Apply Neumann boundary conditions on the edge of the simulation box: null derivative on the edge
     """
-    # Dirichlet also
+    # Dirichlet instead
     q[0] = 1
     q[-1] = 1
-    # Neumann boundary conditions on the edge
-    q[1] = q[0]  # Forward finite difference for Neumann condition
-    q[-2] = q[-1]  # Backward finite difference for Neumann condition
+    # # Neumann boundary conditions on the edge
+    # q[1] = q[0]  # Forward finite difference for Neumann condition
+    # q[-2] = q[-1]  # Backward finite difference for Neumann condition
 
 
 # Dirichlet boundary conditions on the metastable states

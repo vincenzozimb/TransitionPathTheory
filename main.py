@@ -17,7 +17,7 @@ elif solve == 3:
     from doublewell import langevin
 elif solve == 4:
     # set parameters
-    beta = 0.1
+    beta = 5
     h = 0.001
     Niter = 5000
     from triplewell import tw
