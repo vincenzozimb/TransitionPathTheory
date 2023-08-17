@@ -52,6 +52,8 @@ def V_partialy(x, y):
 
 
 # simulation parameters
+beta = 6.67
+
 Lx = (-2.0, 2.0)
 Ly = (-1.5, 2.5)
 dx = 0.05
@@ -60,7 +62,6 @@ dy = dx
 Nx = int((Lx[1] - Lx[0]) / dx)
 Ny = int((Ly[1] - Ly[0]) / dy)
 
-beta = 1.67
 Vmax = -2.5
 Niter = 1000
 

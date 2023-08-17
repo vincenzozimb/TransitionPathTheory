@@ -27,20 +27,7 @@ neumann(q)
 dirichlet(q)
 
 
-# update with iterations
-# for k in range(Niter):
-#     print(Niter-k, end="\r")
-#     for i in range(1, N - 1):
-#         for j in range(1, N - 1):
-#             if not (R_bol[i, j] | P_bol[i, j]):
-#                 q[i, j] = (2 * dx**2 * (q[i+1, j] + q[i-1, j]) + 2 * dy**2 * (q[i, j+1] + q[i, j-1])
-#                         - dx * dy**2 * beta * Vx[i, j] * (q[i+1, j] - q[i-1, j])
-#                         - dy * dx**2 * beta * Vy[i, j] * (q[i, j+1] - q[i, j-1])) / (4 * (dx**2 + dy**2)) 
-#     # Apply boundary conditions
-#     neumann(q)
-#     dirichlet(q)
-
-
+# solve iteratively the BK equation using finite differences method 
 for k in range(Niter):
     print(Niter-k, end="\r")
     for i in range(1, Nx - 1):

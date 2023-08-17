@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-from tw2d.tw_init import X, Y, V, prob, beta, R_bol, P_bol
+from tw2d.tw_init import X, Y, V, prob, R_bol, P_bol, beta
 
 
 # Create folder for images, if it does not already exist

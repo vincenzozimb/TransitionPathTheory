@@ -1,25 +1,18 @@
-# execute the code
-solve = 4
+# double well
+run = -1
 
-if solve == 1:
-    # set parameters
-    beta = 1
-    dx = 0.03
-    Niter = 3000
-    from doublewell import run
-elif solve == 2:
-    from doublewell import plot
-elif solve == 3:
-    # set parameters
-    dt = 0.01           # Time step for numerical integration
-    T = 10              # Total time for integration
-    D = 1               # Diffusion coefficient
-    from doublewell import langevin
-elif solve == 4:
-    # set parameters
-    beta = 10
-    h = 0.001
-    Niter = 5000
-    from triplewell import tw
-elif solve == 5:
-    from test import prova
+if run == 1:
+    from dw2d import dw_run
+    from dw2d import dw_analyse
+elif run == 0:
+    from dw2d import dw_analyse
+
+
+# triple well
+run = 1
+
+if run == 1:
+    from tw2d import tw_run
+    from tw2d import tw_analyse
+elif run == 0:
+    from tw2d import tw_analyse
