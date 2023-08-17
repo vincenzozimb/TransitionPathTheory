@@ -58,12 +58,12 @@ V_basin, x_basin = 0.15, 0.35
 R_bool = (np.abs(V-local_minima[1][0]) < V_basin) & (np.abs(x-local_minima[1][1]) < x_basin) 
 xr = x[R_bool]
 
-V_basin, x_basin = 0.6, 2
-P1_bool = (np.abs(V-local_minima[0][0]) < V_basin) & (np.abs(x-local_minima[0][1]) < x_basin)
+V_basin, x_basin = 0.6, 0.15
+P1_bool = (x-local_minima[0][1] < x_basin)
 xp1 = x[P1_bool]
 
 V_basin, x_basin = 0.5, 0.1
-P2_bool = (np.abs(V-local_minima[2][0]) < V_basin) & (np.abs(x-local_minima[2][1]) < x_basin)
+P2_bool = (x-local_minima[2][1] > -x_basin)
 xp2 = x[P2_bool]
 
 P_bool = P1_bool | P2_bool
@@ -227,4 +227,5 @@ plt.title("Superimposed Line and Quiver Plots with Modified Arrow Density")
 plt.xlabel("Position (x)")
 plt.ylabel("Vector Magnitude (v)")
 plt.grid()
-plt.show()
+plt.savefig("triplewell/images/J.png")
+# plt.show()
