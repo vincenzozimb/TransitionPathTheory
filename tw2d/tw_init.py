@@ -52,6 +52,7 @@ def V_partialy(x, y):
 
 
 # simulation parameters
+# beta = 1.67
 beta = 6.67
 
 Lx = (-2.0, 2.0)

@@ -22,7 +22,7 @@ plt.contourf(X, Y, V, levels=15, cmap='viridis')
 plt.colorbar(label='Potential')
 highlighted_levels = np.array([-1])  # Value that highlights the region
 highlighted_contour = np.where(T_bol, highlighted_levels, np.nan)
-plt.contourf(X, Y, highlighted_contour, colors='white', alpha=0.5)
+plt.contourf(X, Y, highlighted_contour, colors='white', alpha=0.0)
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Potential Energy')
@@ -44,8 +44,8 @@ q = np.load("dw2d/data.npy")
 
 # kernel of the probability density of reactive trajectories
 m = q * (1-q) * np.exp(-beta*V)
-Zm = np.sum(m)
-m = m / Zm
+# Zm = np.sum(m)
+# m = m / Zm
 
 
 # plot q and m
@@ -66,7 +66,7 @@ contourf = plt.contourf(X, Y, m, levels=10, cmap='viridis')
 highlighted_levels = np.array([-1])  # Value that highlights the region
 highlighted_contour = np.where(T_bol, highlighted_levels, np.nan)
 plt.contourf(X, Y, highlighted_contour, colors='white', alpha=0.5)
-plt.colorbar(contourf)
+# plt.colorbar(contourf)
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title('Kernel of the transition path density')
